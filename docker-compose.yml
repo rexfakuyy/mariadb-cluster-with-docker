@@ -13,10 +13,9 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=test
       - REPLICATION_PASSWORD=test
-      - MYSQL_DATABASE=maria
+      - MYSQL_DATABASE=recky_database
       - MYSQL_USER=maria
       - MYSQL_PASSWORD=test
-      - MARIADB_DATABASE=db_hallocorona
       - GALERA=On
       - NODE_NAME=node1
       - CLUSTER_NAME=maria_cluster
