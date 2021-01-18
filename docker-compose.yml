@@ -1,0 +1,85 @@
+version: "3"
+services:
+ node1:
+    image: hauptmedia/mariadb:10.1
+    hostname: node1
+    volumes:
+      - ./db01:/var/lib/mysql
+#    networks:
+#        br-db:
+#            ipv4_address: 172.16.10.11
+    ports:
+      - 13306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+      - REPLICATION_PASSWORD=test
+      - MYSQL_DATABASE=maria
+      - MYSQL_USER=maria
+      - MYSQL_PASSWORD=test
+      - MARIADB_DATABASE=db_hallocorona
+      - GALERA=On
+      - NODE_NAME=node1
+      - CLUSTER_NAME=maria_cluster
+      - CLUSTER_ADDRESS=gcomm://
+    command: 
+      - --wsrep-new-cluster
+#      - "SET GLOBAL wsrep_provider_options='pc.bootstrap=true'"
+
+ node2:
+    image: hauptmedia/mariadb:10.1
+    hostname: node2
+    volumes:
+      - ./db02:/var/lib/mysql
+#    networks:
+#        br-db:
+#            ipv4_address: 172.16.10.12
+    links:
+      - node1
+    ports:
+      - 23306:3306
+    environment:
+      - REPLICATION_PASSWORD=test
+      - GALERA=On
+      - NODE_NAME=node2
+      - CLUSTER_NAME=maria_cluster
+      - CLUSTER_ADDRESS=gcomm://node1
+
+ node3:
+    image: hauptmedia/mariadb:10.1
+    hostname: node3
+    volumes:
+      - ./db03:/var/lib/mysql
+#    networks:
+#        br-db:
+#            ipv4_address: 172.16.10.13
+    links:
+      - node1
+    ports:
+      - 33306:3306
+    environment:
+      - REPLICATION_PASSWORD=test
+      - GALERA=On
+      - NODE_NAME=node3
+      - CLUSTER_NAME=maria_cluster
+      - CLUSTER_ADDRESS=gcomm://node1
+ dbvip:
+    image: nginx
+    hostname: dbvip
+#    networks:
+#        br-db:
+#            ipv4_address: 172.16.10.14
+    ports:
+      - 33067:3306
+    volumes:
+      - ./nginx-galera.conf:/etc/nginx/nginx.conf
+    links:
+      - node1
+#networks:
+#    br-db:
+#        driver: bridge
+#        driver_opts:
+#            com.docker.network.bridge.name: "br-db"
+#        ipam:
+#            driver: default
+#            config:
+#                - subnet: 172.16.10.0/24
