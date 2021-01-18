@@ -1,2 +1,2 @@
 # mariadb-cluster-with-docker
-Settingan mariadbcluster di docker biar bisa backup
+### Noted: Wajib bikin folder sesuai volume dulu untuk safe_bootstrap menjadi 1.
