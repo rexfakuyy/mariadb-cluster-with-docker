@@ -68,7 +68,7 @@ services:
 #        br-db:
 #            ipv4_address: 172.16.10.14
     ports:
-      - 33067:3306
+      - 3306:3306
     volumes:
       - ./nginx-galera.conf:/etc/nginx/nginx.conf
     links:
